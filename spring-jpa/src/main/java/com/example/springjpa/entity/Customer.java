@@ -32,9 +32,6 @@ public class Customer {
 	@OneToMany(mappedBy = "customer")
 	private List<Orders> orders;
 
-	@OneToMany
-	private List<PaymentMethod> paymentMethods;
-
 	public void setName(String name) {
 		this.name = name;
 	}
