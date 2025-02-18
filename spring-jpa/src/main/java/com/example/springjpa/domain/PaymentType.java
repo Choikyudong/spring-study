@@ -1,11 +1,11 @@
 package com.example.springjpa.domain;
 
-public enum Payment {
+public enum PaymentType {
 
 	APPLEPAY,
 	SAMSUNGPAY,
 	NAVERPAY,
-	KAKAPAY,
+	KAKAOPAY,
 	WECHATPAY,
 
 }
