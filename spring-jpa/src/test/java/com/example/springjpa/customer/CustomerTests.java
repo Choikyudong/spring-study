@@ -1,6 +1,6 @@
 package com.example.springjpa.customer;
 
-import com.example.springjpa.TeestExecutionListener;
+import com.example.springjpa.TestExecutionListener;
 import com.example.springjpa.dto.LoginReqDTO;
 import com.example.springjpa.dto.RegisterReqDTO;
 import com.example.springjpa.dto.UpdateReqDTO;
@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Tag("사용자")
 @Transactional
-@ExtendWith(TeestExecutionListener.class)
+@ExtendWith(TestExecutionListener.class)
 public class CustomerTests {
 
 	@Autowired
