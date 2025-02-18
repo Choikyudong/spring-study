@@ -5,7 +5,7 @@ import com.example.springjpa.domain.PaymentType;
 import com.example.springjpa.dto.PaymentMethodDeleteReqDTO;
 import com.example.springjpa.dto.PaymentMethodRegisterReqDTO;
 import com.example.springjpa.dto.PaymentMethodUpdateReqDTO;
-import com.example.springjpa.dto.RegisterReqDTO;
+import com.example.springjpa.dto.CustomerRegisterReqDTO;
 import com.example.springjpa.entity.PaymentMethod;
 import com.example.springjpa.entity.vo.PaymentInfo;
 import com.example.springjpa.service.CustomerService;
@@ -38,14 +38,14 @@ public class PaymentsMedthodTests {
 	@Tag("테스트 준비")
 	void setUp() {
 		System.out.println("\nsetUp - start");
-		RegisterReqDTO registerReqDTO = new RegisterReqDTO(
+		CustomerRegisterReqDTO customerRegisterReqDTO = new CustomerRegisterReqDTO(
 				"test1",
 				"고객1",
 				"test1234",
 				"좋은 도시",
 				"1번가"
 		);
-		customerService.register(registerReqDTO);
+		customerService.register(customerRegisterReqDTO);
 		System.out.println("setUp - end");
 	}
 

@@ -2,7 +2,7 @@ package com.example.springjpa.dto;
 
 import com.example.springjpa.entity.vo.Address;
 
-public interface LoginResDTO {
+public interface CustomerLoginResDTO {
 
 	String getNick();
 

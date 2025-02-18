@@ -1,9 +1,9 @@
 package com.example.springjpa.customer;
 
 import com.example.springjpa.TestExecutionListener;
-import com.example.springjpa.dto.LoginReqDTO;
-import com.example.springjpa.dto.RegisterReqDTO;
-import com.example.springjpa.dto.UpdateReqDTO;
+import com.example.springjpa.dto.CustomerLoginReqDTO;
+import com.example.springjpa.dto.CustomerRegisterReqDTO;
+import com.example.springjpa.dto.CustomerUpdateReqDTO;
 import com.example.springjpa.entity.vo.Address;
 import com.example.springjpa.service.CustomerService;
 import org.apache.coyote.BadRequestException;
@@ -28,30 +28,30 @@ public class CustomerTests {
 	@Tag("테스트 준비")
 	void setUp() {
 		System.out.println("\nsetUp - start");
-		RegisterReqDTO registerReqDTO = new RegisterReqDTO(
+		CustomerRegisterReqDTO customerRegisterReqDTO = new CustomerRegisterReqDTO(
 				"test1",
 				"고객1",
 				"test1234",
 				"좋은 도시",
 				"1번가"
 		);
-		customerService.register(registerReqDTO);
+		customerService.register(customerRegisterReqDTO);
 		System.out.println("setUp - end");
 	}
 
 	@Test
 	@Tag("회원가입")
 	void register() {
-		RegisterReqDTO registerReqDTO = new RegisterReqDTO(
+		CustomerRegisterReqDTO customerRegisterReqDTO = new CustomerRegisterReqDTO(
 			"test",
 			"고객",
 			"test1234",
 			"밝은 도시",
 			"99번가"
 		);
-		customerService.register(registerReqDTO);
+		customerService.register(customerRegisterReqDTO);
 
-		RegisterReqDTO duplregisterReqDTO = new RegisterReqDTO(
+		CustomerRegisterReqDTO duplregisterReqDTOCustomer = new CustomerRegisterReqDTO(
 				"test1",
 				"고객1",
 				"test1234",
@@ -59,22 +59,22 @@ public class CustomerTests {
 				"1번가"
 		);
 		assertThrows(IllegalArgumentException.class, () ->
-			customerService.register(duplregisterReqDTO)
+			customerService.register(duplregisterReqDTOCustomer)
 		);
 	}
 
 	@Test
 	@Tag("로그인")
 	void login() throws BadRequestException {
-		LoginReqDTO login1 = new LoginReqDTO("test1", "test1234");
+		CustomerLoginReqDTO login1 = new CustomerLoginReqDTO("test1", "test1234");
 		assertNotNull(customerService.login(login1));
 
-		LoginReqDTO login2 = new LoginReqDTO("test1", "test4321");
+		CustomerLoginReqDTO login2 = new CustomerLoginReqDTO("test1", "test4321");
 		assertThrows(BadRequestException.class, () ->
 			customerService.login(login2)
 		);
 
-		LoginReqDTO login3 = new LoginReqDTO("test2", "test4321");
+		CustomerLoginReqDTO login3 = new CustomerLoginReqDTO("test2", "test4321");
 		assertThrows(IllegalArgumentException.class, () ->
 			customerService.login(login3)
 		);
@@ -83,7 +83,7 @@ public class CustomerTests {
 	@Test
 	@Tag("회원수정")
 	void update() {
-		UpdateReqDTO update1 = new UpdateReqDTO(
+		CustomerUpdateReqDTO update1 = new CustomerUpdateReqDTO(
 				1,
 				"고객1",
 				"1234",
@@ -94,7 +94,7 @@ public class CustomerTests {
 		);
 		customerService.update(update1);
 
-		UpdateReqDTO update2 = new UpdateReqDTO(
+		CustomerUpdateReqDTO update2 = new CustomerUpdateReqDTO(
 				1,
 				"고객4",
 				null,
@@ -102,7 +102,7 @@ public class CustomerTests {
 		);
 		customerService.update(update2);
 
-		UpdateReqDTO update3 = new UpdateReqDTO(
+		CustomerUpdateReqDTO update3 = new CustomerUpdateReqDTO(
 				999,
 				"고객1",
 				null,
