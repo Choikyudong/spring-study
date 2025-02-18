@@ -1,4 +1,4 @@
-package com.example.springjpa.entity;
+package com.example.springjpa.entity.vo;
 
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;

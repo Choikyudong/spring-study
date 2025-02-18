@@ -1,6 +1,7 @@
 package com.example.springjpa.entity;
 
 import com.example.springjpa.domain.Category;
+import com.example.springjpa.entity.vo.Address;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;

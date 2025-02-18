@@ -1,6 +1,6 @@
 package com.example.springjpa.dto;
 
-import com.example.springjpa.entity.Address;
+import com.example.springjpa.entity.vo.Address;
 
 public interface LoginResDTO {
 

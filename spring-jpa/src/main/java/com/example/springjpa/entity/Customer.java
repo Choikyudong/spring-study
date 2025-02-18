@@ -1,5 +1,6 @@
 package com.example.springjpa.entity;
 
+import com.example.springjpa.entity.vo.Address;
 import jakarta.persistence.*;
 import lombok.*;
 

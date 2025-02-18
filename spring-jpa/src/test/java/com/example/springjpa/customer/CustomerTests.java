@@ -4,7 +4,7 @@ import com.example.springjpa.TestExecutionListener;
 import com.example.springjpa.dto.LoginReqDTO;
 import com.example.springjpa.dto.RegisterReqDTO;
 import com.example.springjpa.dto.UpdateReqDTO;
-import com.example.springjpa.entity.Address;
+import com.example.springjpa.entity.vo.Address;
 import com.example.springjpa.service.CustomerService;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.*;
