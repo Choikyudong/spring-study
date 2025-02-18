@@ -7,7 +7,9 @@ import com.example.springjpa.dto.PaymentMethodRegisterReqDTO;
 import com.example.springjpa.dto.PaymentMethodUpdateReqDTO;
 import com.example.springjpa.dto.CustomerRegisterReqDTO;
 import com.example.springjpa.entity.PaymentMethod;
+import com.example.springjpa.entity.vo.Address;
 import com.example.springjpa.entity.vo.PaymentInfo;
+import com.example.springjpa.entity.vo.UserInfo;
 import com.example.springjpa.service.CustomerService;
 import com.example.springjpa.service.PaymentMethodService;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +18,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Tag("결제수단")
-@Transactional
 @ExtendWith(TestExecutionListener.class)
 public class PaymentsMedthodTests {
 
@@ -35,17 +35,18 @@ public class PaymentsMedthodTests {
 	private PaymentMethodService paymentMethodService;
 
 	@BeforeEach
-	@Tag("테스트 준비")
+	@Tag("사용자 생성")
 	void setUp() {
 		System.out.println("\nsetUp - start");
 		CustomerRegisterReqDTO customerRegisterReqDTO = new CustomerRegisterReqDTO(
-				"test1",
-				"고객1",
-				"test1234",
-				"좋은 도시",
-				"1번가"
+				new UserInfo("test1", "고객1", "test1234"),
+				new Address("좋은 도시", "1번가")
 		);
-		customerService.register(customerRegisterReqDTO);
+		try {
+			customerService.register(customerRegisterReqDTO);
+		} catch (IllegalArgumentException i) {
+			System.out.println("setUp - already");
+		}
 		System.out.println("setUp - end");
 	}
 
@@ -75,11 +76,14 @@ public class PaymentsMedthodTests {
 		PaymentMethodRegisterReqDTO paymentsReqDTO = new PaymentMethodRegisterReqDTO(
 				1, "APPLE", new PaymentInfo(PaymentType.APPLEPAY, "d32iuoc0ads")
 		);
-		assertNotNull(paymentMethodService.register(paymentsReqDTO));
+		List<PaymentMethod> registerList = paymentMethodService.register(paymentsReqDTO);
+		assertNotNull(registerList);
+
+		int nextId = registerList.get(0).getId();
 
 		// 수정
 		PaymentMethodUpdateReqDTO paymentsUpdateDTO1 = new PaymentMethodUpdateReqDTO(
-				1, 1, "NAVER", new PaymentInfo(PaymentType.NAVERPAY, "NASui3y2413")
+				nextId, 1, "NAVER", new PaymentInfo(PaymentType.NAVERPAY, "NASui3y2413")
 		);
 		List<PaymentMethod> paymentResDTOList = paymentMethodService.update(paymentsUpdateDTO1);
 		assertNotNull(paymentResDTOList);
@@ -90,7 +94,7 @@ public class PaymentsMedthodTests {
 		assertThrows(IllegalArgumentException.class, () -> paymentMethodService.update(paymentsUpdateDTO2));
 
 		PaymentMethodUpdateReqDTO paymentsUpdateDTO3 = new PaymentMethodUpdateReqDTO(
-				1, 2, "SAMSAM", new PaymentInfo(PaymentType.SAMSUNGPAY, "dszf389Ae4fghDF")
+				nextId, 2, "SAMSAM", new PaymentInfo(PaymentType.SAMSUNGPAY, "dszf389Ae4fghDF")
 		);
 		assertThrows(IllegalArgumentException.class, () -> paymentMethodService.update(paymentsUpdateDTO3));
 	}

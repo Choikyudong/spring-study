@@ -4,7 +4,6 @@ import com.example.springjpa.dto.CustomerLoginReqDTO;
 import com.example.springjpa.dto.CustomerLoginResDTO;
 import com.example.springjpa.dto.CustomerRegisterReqDTO;
 import com.example.springjpa.dto.CustomerUpdateReqDTO;
-import com.example.springjpa.entity.vo.Address;
 import com.example.springjpa.entity.Customer;
 import com.example.springjpa.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
@@ -22,24 +21,19 @@ public class CustomerService {
 
 	public void register(CustomerRegisterReqDTO customerRegisterReqDTO) {
 		Customer customer = Customer.builder()
-				.name(customerRegisterReqDTO.name())
-				.nick(customerRegisterReqDTO.nick())
-				.pwd(customerRegisterReqDTO.pwd())
-				.address(Address.builder()
-					.city(customerRegisterReqDTO.city())
-					.street(customerRegisterReqDTO.street())
-					.build())
+				.userInfo(customerRegisterReqDTO.userInfo())
+				.address(customerRegisterReqDTO.address())
 				.build();
-		if (customerRepository.existsByNick(customer.getNick())) {
+		if (customerRepository.existsByUserInfoNick(customer.getUserInfo().getNick())) {
 			throw new IllegalArgumentException();
 		}
 		customerRepository.save(customer);
 	}
 
 	public CustomerLoginResDTO login(CustomerLoginReqDTO customerLoginReqDTO) throws BadRequestException {
-		CustomerLoginResDTO customerLoginResDTO = customerRepository.findByNick(customerLoginReqDTO.nick())
+		CustomerLoginResDTO customerLoginResDTO = customerRepository.findByUserInfoNick(customerLoginReqDTO.nick())
 				.orElseThrow(IllegalArgumentException::new);
-		if (!customerLoginResDTO.getPwd().equals(customerLoginReqDTO.pwd())) {
+		if (!customerLoginResDTO.getUserInfo().getPwd().equals(customerLoginReqDTO.pwd())) {
 			throw new BadRequestException();
 		}
 		return customerLoginResDTO;
@@ -49,11 +43,8 @@ public class CustomerService {
 	public void update(CustomerUpdateReqDTO customerUpdateReqDTO) {
 		Customer customer = customerRepository.findById(customerUpdateReqDTO.id())
 				.orElseThrow(IllegalArgumentException::new);
-		if (Objects.nonNull(customerUpdateReqDTO.name())) {
-			customer.setName(customerUpdateReqDTO.name());
-		}
-		if (Objects.nonNull(customerUpdateReqDTO.pwd())) {
-			customer.setPwd(customerUpdateReqDTO.pwd());
+		if (Objects.nonNull(customerUpdateReqDTO.userInfo())) {
+			customer.setUserInfo(customerUpdateReqDTO.userInfo());
 		}
 		if (Objects.nonNull(customerUpdateReqDTO.address())) {
 			customer.setAddress(customerUpdateReqDTO.address());

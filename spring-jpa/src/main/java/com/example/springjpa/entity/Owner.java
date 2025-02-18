@@ -1,19 +1,16 @@
 package com.example.springjpa.entity;
 
-import com.example.springjpa.entity.vo.Address;
 import com.example.springjpa.entity.vo.UserInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Table
-@Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Customer {
+@AllArgsConstructor
+@Builder
+@Getter
+public class Owner {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,19 +19,15 @@ public class Customer {
 	@Embedded
 	private UserInfo userInfo;
 
-	@Embedded
-	@Column(nullable = false)
-	private Address address;
-
-	@OneToMany(mappedBy = "customer")
-	private List<Orders> orders;
+	@OneToOne(cascade = CascadeType.PERSIST)
+	private Restaurants restaurants;
 
 	public void setUserInfo(UserInfo userInfo) {
 		this.userInfo = userInfo;
 	}
 
-	public void setAddress(Address address) {
-		this.address = address;
+	public void setRestaurants(Restaurants restaurants) {
+		this.restaurants = restaurants;
 	}
 
 }

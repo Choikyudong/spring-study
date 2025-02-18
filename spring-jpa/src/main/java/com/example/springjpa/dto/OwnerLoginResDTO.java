@@ -1,12 +1,12 @@
 package com.example.springjpa.dto;
 
-import com.example.springjpa.entity.vo.Address;
+import com.example.springjpa.entity.Restaurants;
 import com.example.springjpa.entity.vo.UserInfo;
 
-public interface CustomerLoginResDTO {
+public interface OwnerLoginResDTO {
 
 	UserInfo getUserInfo();
 
-	Address getAddress();
+	Restaurants getRestaurants();
 
 }

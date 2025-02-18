@@ -1,6 +1,8 @@
 package com.example.springjpa.dto;
 
-public record CustomerRegisterReqDTO(String nick, String name, String pwd, String city, String street) {
+import com.example.springjpa.entity.vo.Address;
+import com.example.springjpa.entity.vo.UserInfo;
 
+public record CustomerRegisterReqDTO(UserInfo userInfo, Address address) {
 }
 

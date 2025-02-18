@@ -5,19 +5,18 @@ import com.example.springjpa.dto.CustomerLoginReqDTO;
 import com.example.springjpa.dto.CustomerRegisterReqDTO;
 import com.example.springjpa.dto.CustomerUpdateReqDTO;
 import com.example.springjpa.entity.vo.Address;
+import com.example.springjpa.entity.vo.UserInfo;
 import com.example.springjpa.service.CustomerService;
 import org.apache.coyote.BadRequestException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Tag("사용자")
-@Transactional
 @ExtendWith(TestExecutionListener.class)
 public class CustomerTests {
 
@@ -25,17 +24,18 @@ public class CustomerTests {
 	private CustomerService customerService;
 
 	@BeforeEach
-	@Tag("테스트 준비")
+	@Tag("사용자 데이터 생성")
 	void setUp() {
 		System.out.println("\nsetUp - start");
 		CustomerRegisterReqDTO customerRegisterReqDTO = new CustomerRegisterReqDTO(
-				"test1",
-				"고객1",
-				"test1234",
-				"좋은 도시",
-				"1번가"
+				new UserInfo("test1", "고객1", "test1234"),
+				new Address("좋은 도시", "1번가")
 		);
-		customerService.register(customerRegisterReqDTO);
+		try {
+			customerService.register(customerRegisterReqDTO);
+		} catch (IllegalArgumentException i) {
+			System.out.println("setUp - already");
+		}
 		System.out.println("setUp - end");
 	}
 
@@ -43,20 +43,14 @@ public class CustomerTests {
 	@Tag("회원가입")
 	void register() {
 		CustomerRegisterReqDTO customerRegisterReqDTO = new CustomerRegisterReqDTO(
-			"test",
-			"고객",
-			"test1234",
-			"밝은 도시",
-			"99번가"
+				new UserInfo("test", "고객", "test1234"),
+				new Address("밝은 도시", "99번가")
 		);
 		customerService.register(customerRegisterReqDTO);
 
 		CustomerRegisterReqDTO duplregisterReqDTOCustomer = new CustomerRegisterReqDTO(
-				"test1",
-				"고객1",
-				"test1234",
-				"좋은 도시",
-				"1번가"
+				new UserInfo("test1", "고객1", "test1234"),
+				new Address("좋은 도시", "1번가")
 		);
 		assertThrows(IllegalArgumentException.class, () ->
 			customerService.register(duplregisterReqDTOCustomer)
@@ -85,27 +79,21 @@ public class CustomerTests {
 	void update() {
 		CustomerUpdateReqDTO update1 = new CustomerUpdateReqDTO(
 				1,
-				"고객1",
-				"1234",
-				Address.builder()
-						.city("도시1")
-						.street("지번1")
-						.build()
+				new UserInfo(null, "고객1", "test1234"),
+				new Address("도시1", "도로1")
 		);
 		customerService.update(update1);
 
 		CustomerUpdateReqDTO update2 = new CustomerUpdateReqDTO(
 				1,
-				"고객4",
-				null,
+				new UserInfo(null, "고객1", null),
 				null
 		);
 		customerService.update(update2);
 
 		CustomerUpdateReqDTO update3 = new CustomerUpdateReqDTO(
 				999,
-				"고객1",
-				null,
+				new UserInfo(null, "고객1", null),
 				null
 		);
 		assertThrows(IllegalArgumentException.class, () ->

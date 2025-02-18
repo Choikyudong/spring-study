@@ -2,16 +2,14 @@ package com.example.springjpa.entity;
 
 import com.example.springjpa.entity.vo.PaymentInfo;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Getter
 public class PaymentMethod {
 
 	@Id

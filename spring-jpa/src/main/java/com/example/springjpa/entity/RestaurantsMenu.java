@@ -1,19 +1,29 @@
 package com.example.springjpa.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RestaurantsMenu {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Restaurants restaurants;
+
+	@Column(nullable = false)
 	private String name;
 
-	private String price;
+	@Column(nullable = false)
+	private int price;
+
+	public RestaurantsMenu(String name, int price) {
+		this.name = name;
+		this.price = price;
+	}
 
 }
