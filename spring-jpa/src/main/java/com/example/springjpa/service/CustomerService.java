@@ -4,7 +4,7 @@ import com.example.springjpa.dto.LoginReqDTO;
 import com.example.springjpa.dto.LoginResDTO;
 import com.example.springjpa.dto.RegisterReqDTO;
 import com.example.springjpa.dto.UpdateReqDTO;
-import com.example.springjpa.entity.Address;
+import com.example.springjpa.entity.vo.Address;
 import com.example.springjpa.entity.Customer;
 import com.example.springjpa.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
