@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("결제수단")
 @Transactional
 @ExtendWith(TestExecutionListener.class)
-public class PayMentsMedthodTests {
+public class PaymentsMedthodTests {
 
 	@Autowired
 	private CustomerService customerService;
