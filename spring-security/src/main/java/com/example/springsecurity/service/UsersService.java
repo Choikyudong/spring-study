@@ -2,7 +2,7 @@ package com.example.springsecurity.service;
 
 import com.example.springsecurity.dto.UserLoginReqDTO;
 import com.example.springsecurity.dto.UserLoginResDTO;
-import com.example.springsecurity.dto.UsersRegisterReqDTO;
+import com.example.springsecurity.dto.UsersSignUpReqDTO;
 import com.example.springsecurity.entity.Roles;
 import com.example.springsecurity.entity.Users;
 import com.example.springsecurity.respoitory.RolesRepository;
@@ -28,7 +28,7 @@ public class UsersService implements UserDetailsService {
 	private final PasswordEncoder passwordEncoder;
 	private final TokenService tokenService;
 
-	public void signUp(UsersRegisterReqDTO reqDTO) {
+	public void signUp(UsersSignUpReqDTO reqDTO) {
 		List<Roles> rolesList = reqDTO.roleList().stream()
 				.map(role -> rolesRepository.findByRole(role)
 						.orElseThrow(IllegalArgumentException::new))

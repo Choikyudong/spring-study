@@ -1,7 +1,7 @@
 package com.example.springsecurity;
 
 import com.example.springsecurity.dto.UserLoginResDTO;
-import com.example.springsecurity.dto.UsersRegisterReqDTO;
+import com.example.springsecurity.dto.UsersSignUpReqDTO;
 import com.example.springsecurity.service.UsersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -57,7 +57,7 @@ class SpringSecurityApplicationTests {
 	@DisplayName("로그인")
 	void login() throws Exception {
 		// 테스트를 위해 사용자 생성
-		usersService.signUp(new UsersRegisterReqDTO("user", "password1234", "test@test.com", null));
+		usersService.signUp(new UsersSignUpReqDTO("user", "password1234", "test@test.com", null));
 
 		MvcResult result = mockMvc.perform(post("/login")
 						.contentType(MediaType.APPLICATION_JSON)

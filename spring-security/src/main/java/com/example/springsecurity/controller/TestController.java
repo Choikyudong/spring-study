@@ -2,7 +2,7 @@ package com.example.springsecurity.controller;
 
 import com.example.springsecurity.dto.UserLoginReqDTO;
 import com.example.springsecurity.dto.UserLoginResDTO;
-import com.example.springsecurity.dto.UsersRegisterReqDTO;
+import com.example.springsecurity.dto.UsersSignUpReqDTO;
 import com.example.springsecurity.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,7 +24,7 @@ public class TestController {
 	}
 
 	@PostMapping("/signUp")
-	public ResponseEntity<String> signUp(@RequestBody UsersRegisterReqDTO reqDTO) {
+	public ResponseEntity<String> signUp(@RequestBody UsersSignUpReqDTO reqDTO) {
 		usersService.signUp(reqDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body("User Created Success");
 	}
