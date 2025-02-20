@@ -1,5 +1,6 @@
 package com.example.springjpa.entity;
 
+import com.example.springjpa.domain.PaymentStatus;
 import com.example.springjpa.entity.vo.PaymentInfo;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,5 +33,12 @@ public class Payment {
 	@CreatedDate
 	@Column(updatable = false)
 	private LocalDateTime paymentTime;
+
+	@Enumerated(EnumType.STRING)
+	private PaymentStatus paymentStatus;
+
+	public void setPaymentStatus(PaymentStatus paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
 
 }

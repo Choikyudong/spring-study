@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Embeddable
 @AllArgsConstructor
-@NoArgsConstructor()
+@NoArgsConstructor
 public class PaymentInfo {
 
 	@Enumerated(EnumType.STRING)

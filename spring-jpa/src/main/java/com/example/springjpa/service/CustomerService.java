@@ -19,6 +19,11 @@ public class CustomerService {
 
 	private final CustomerRepository customerRepository;
 
+	public Customer findCustomer(int customerId) {
+		return customerRepository.findById(customerId)
+				.orElseThrow(IllegalArgumentException::new);
+	}
+
 	public void register(CustomerRegisterReqDTO customerRegisterReqDTO) {
 		Customer customer = Customer.builder()
 				.userInfo(customerRegisterReqDTO.userInfo())

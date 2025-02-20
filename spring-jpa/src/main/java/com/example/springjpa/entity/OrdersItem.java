@@ -1,8 +1,13 @@
 package com.example.springjpa.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@Getter
 public class OrdersItem {
 
 	@Id
