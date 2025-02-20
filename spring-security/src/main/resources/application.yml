@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: security-study
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:security
+    hikari:
+      username: sa
+      password:
+  h2:
+    console:
+      enabled: true
+      path: /jpa
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  secret: 64KY64qU7LWc6rec64+Z7J206rOg7J206rG07JWU7Zi47J206rOgIUDsnbTqsbTrrZDrg5A/JQ==
+  expired: 3600
