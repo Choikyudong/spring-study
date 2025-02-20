@@ -4,7 +4,7 @@ import com.example.springsecurity.dto.UserLoginReqDTO;
 import com.example.springsecurity.dto.UserLoginResDTO;
 import com.example.springsecurity.dto.UsersRegisterReqDTO;
 import com.example.springsecurity.service.UsersService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class TestController {
 
 	private final UsersService usersService;
