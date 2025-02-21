@@ -2,6 +2,8 @@ package com.example.springsecurity;
 
 import com.example.springsecurity.dto.UserLoginResDTO;
 import com.example.springsecurity.dto.UsersSignUpReqDTO;
+import com.example.springsecurity.dto.UsersUpdateResDTO;
+import com.example.springsecurity.entity.Users;
 import com.example.springsecurity.service.UsersService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -9,7 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -51,6 +55,34 @@ class SpringSecurityApplicationTests {
 								"""
 						))
 				.andExpect(status().isCreated());
+
+		mockMvc.perform(post("/signUp")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(
+								"""
+								{
+									"userName": "admin",\s
+									"password": "admin1234",\s
+									"email": "admin@admin.com",\s
+									"roleList": ["ADMIN"]\s
+								}
+								"""
+						))
+				.andExpect(status().isCreated());
+
+		mockMvc.perform(post("/signUp")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(
+								"""
+								{
+									"userName": "superAdmin",\s
+									"password": "superAdmin1234",\s
+									"email": "superAdmin@superAdmin.com",\s
+									"roleList": ["ADMIN", "USER"]\s
+								}
+								"""
+						))
+				.andExpect(status().isCreated());
 	}
 
 	@Test
@@ -71,6 +103,44 @@ class SpringSecurityApplicationTests {
 						.andReturn();
 		String json = result.getResponse().getContentAsString();
 		assertNotNull(mapper.readValue(json, UserLoginResDTO.class));
+	}
+
+	@Test
+	@WithAnonymousUser
+	@DisplayName("업데이트")
+	void update() throws Exception {
+		// 테스트 사전 준비
+		usersService.signUp(new UsersSignUpReqDTO("user", "password1234", "test@test.com", null));
+		MvcResult login = mockMvc.perform(post("/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("""
+								{
+									"userName": "user",\s
+									"password": "password1234"\s
+								}
+								"""))
+				.andExpect(status().isOk())
+				.andReturn();
+		String json = login.getResponse().getContentAsString();
+		UserLoginResDTO loginResDTO = mapper.readValue(json, UserLoginResDTO.class);
+
+		MvcResult update = mockMvc.perform(patch("/update")
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResDTO.token())
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("""
+								{
+									"userName": "user",\s
+									"password": "changepwd1234",\s
+									"email": "test@test.net"\s
+								}
+								"""))
+				.andExpect(status().isAccepted())
+				.andReturn();
+		String result = update.getResponse().getContentAsString();
+		UsersUpdateResDTO updateResDTO = mapper.readValue(result, UsersUpdateResDTO.class);
+
+		Users users = usersService.loadUserByUsername("user");
+		assertEquals(users.getEmail(), updateResDTO.email());
 	}
 
 }

@@ -1,16 +1,11 @@
 package com.example.springsecurity.controller;
 
-import com.example.springsecurity.dto.UserLoginReqDTO;
-import com.example.springsecurity.dto.UserLoginResDTO;
-import com.example.springsecurity.dto.UsersSignUpReqDTO;
+import com.example.springsecurity.dto.*;
 import com.example.springsecurity.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,9 +29,9 @@ public class TestController {
 		return ResponseEntity.ok(usersService.login(reqDTO));
 	}
 
-	@PostMapping("/secure-test")
-	public ResponseEntity<String> secureTest() {
-		return ResponseEntity.ok().build();
+	@PatchMapping("/update")
+	public ResponseEntity<UsersUpdateResDTO> login(@RequestBody UsersUpdateReqDTO reqDTO) {
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(usersService.update(reqDTO));
 	}
 
 }

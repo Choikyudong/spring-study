@@ -1,8 +1,6 @@
 package com.example.springsecurity.service;
 
-import com.example.springsecurity.dto.UserLoginReqDTO;
-import com.example.springsecurity.dto.UserLoginResDTO;
-import com.example.springsecurity.dto.UsersSignUpReqDTO;
+import com.example.springsecurity.dto.*;
 import com.example.springsecurity.entity.Roles;
 import com.example.springsecurity.entity.Users;
 import com.example.springsecurity.respoitory.RolesRepository;
@@ -64,6 +62,15 @@ public class UsersService implements UserDetailsService {
 	public Users loadUserByUsername(String username) throws UsernameNotFoundException {
 		return usersRepository.findByUserName(username)
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+	}
+
+	public UsersUpdateResDTO update(UsersUpdateReqDTO reqDTO) {
+		Users users = loadUserByUsername(reqDTO.userName());
+		users.toBuilder()
+				.password(passwordEncoder.encode(reqDTO.password()))
+				.email(reqDTO.email())
+				.build();
+		return UsersUpdateResDTO.convert(users);
 	}
 
 }
