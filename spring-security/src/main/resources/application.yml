@@ -9,8 +9,8 @@ spring:
       password:
   h2:
     console:
-      enabled: true
-      path: /jpa
+      enabled: false
+      path: /h2-security
   jpa:
     show-sql: true
     hibernate:

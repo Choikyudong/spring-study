@@ -8,8 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequestMapping("/user")
 @RequiredArgsConstructor
-public class TestController {
+public class UserController {
 
 	private final UsersService usersService;
 

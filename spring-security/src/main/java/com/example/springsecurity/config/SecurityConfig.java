@@ -1,5 +1,6 @@
 package com.example.springsecurity.config;
 
+import com.example.springsecurity.domain.Role;
 import com.example.springsecurity.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -24,13 +25,18 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET).permitAll()
-						.requestMatchers(HttpMethod.OPTIONS).permitAll()
+						.requestMatchers(HttpMethod.GET, "/user", "/user/*").permitAll()
+						.requestMatchers(HttpMethod.GET, "/admin","/admin/*").hasRole(Role.ADMIN.name())
+						.requestMatchers(HttpMethod.OPTIONS)
+						.permitAll()
 						.requestMatchers(HttpMethod.POST,
-								"/signUp", "/login"
+								"/user/signUp", "/user/login",
+								"/admin/signUp", "/admin/login"
 						).permitAll()
-						.requestMatchers(HttpMethod.PATCH).authenticated()
-						.requestMatchers(HttpMethod.DELETE).authenticated()
+						.requestMatchers(HttpMethod.POST, "/admin/*").hasRole(Role.ADMIN.name())
+						.requestMatchers(HttpMethod.PATCH, "/admin/*").hasRole(Role.ADMIN.name())
+						.requestMatchers(HttpMethod.DELETE)
+						.authenticated()
 						.anyRequest().authenticated()
 				)
 				.httpBasic(AbstractHttpConfigurer::disable)

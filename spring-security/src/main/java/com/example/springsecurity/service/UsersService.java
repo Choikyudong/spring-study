@@ -66,10 +66,8 @@ public class UsersService implements UserDetailsService {
 
 	public UsersUpdateResDTO update(UsersUpdateReqDTO reqDTO) {
 		Users users = loadUserByUsername(reqDTO.userName());
-		users.toBuilder()
-				.password(passwordEncoder.encode(reqDTO.password()))
-				.email(reqDTO.email())
-				.build();
+		users.setPassword(passwordEncoder.encode(reqDTO.password()));
+		users.setEmail(reqDTO.email());
 		return UsersUpdateResDTO.convert(users);
 	}
 

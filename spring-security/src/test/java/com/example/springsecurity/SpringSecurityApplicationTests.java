@@ -1,5 +1,6 @@
 package com.example.springsecurity;
 
+import com.example.springsecurity.domain.Role;
 import com.example.springsecurity.dto.UserLoginResDTO;
 import com.example.springsecurity.dto.UsersSignUpReqDTO;
 import com.example.springsecurity.dto.UsersUpdateResDTO;
@@ -16,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,16 +37,16 @@ class SpringSecurityApplicationTests {
 	private final ObjectMapper mapper = new ObjectMapper();
 
 	@Test
-	@DisplayName("인증없는 Get 테스트")
-	void getTest() throws Exception {
-		mockMvc.perform(get("/"))
+	@DisplayName("User Get 테스트")
+	void getTestUser() throws Exception {
+		mockMvc.perform(get("/user"))
 				.andExpect(status().isOk());
 	}
 
 	@Test
 	@DisplayName("회원가입 요청")
 	void singUp() throws Exception {
-		mockMvc.perform(post("/signUp")
+		mockMvc.perform(post("/user/signUp")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(
 								"""
@@ -56,7 +59,7 @@ class SpringSecurityApplicationTests {
 						))
 				.andExpect(status().isCreated());
 
-		mockMvc.perform(post("/signUp")
+		mockMvc.perform(post("/user/signUp")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(
 								"""
@@ -70,7 +73,7 @@ class SpringSecurityApplicationTests {
 						))
 				.andExpect(status().isCreated());
 
-		mockMvc.perform(post("/signUp")
+		mockMvc.perform(post("/user/signUp")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(
 								"""
@@ -91,7 +94,7 @@ class SpringSecurityApplicationTests {
 		// 테스트를 위해 사용자 생성
 		usersService.signUp(new UsersSignUpReqDTO("user", "password1234", "test@test.com", null));
 
-		MvcResult result = mockMvc.perform(post("/login")
+		MvcResult result = mockMvc.perform(post("/user/login")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("""
 								{
@@ -111,7 +114,7 @@ class SpringSecurityApplicationTests {
 	void update() throws Exception {
 		// 테스트 사전 준비
 		usersService.signUp(new UsersSignUpReqDTO("user", "password1234", "test@test.com", null));
-		MvcResult login = mockMvc.perform(post("/login")
+		MvcResult login = mockMvc.perform(post("/user/login")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("""
 								{
@@ -124,7 +127,7 @@ class SpringSecurityApplicationTests {
 		String json = login.getResponse().getContentAsString();
 		UserLoginResDTO loginResDTO = mapper.readValue(json, UserLoginResDTO.class);
 
-		MvcResult update = mockMvc.perform(patch("/update")
+		MvcResult update = mockMvc.perform(patch("/user/update")
 						.header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResDTO.token())
 						.contentType(MediaType.APPLICATION_JSON)
 						.content("""
@@ -141,6 +144,82 @@ class SpringSecurityApplicationTests {
 
 		Users users = usersService.loadUserByUsername("user");
 		assertEquals(users.getEmail(), updateResDTO.email());
+	}
+
+	@Test
+	@WithAnonymousUser
+	@DisplayName("비활성화")
+	void deactivate() throws Exception {
+		// 테스트 사전 준비
+		usersService.signUp(new UsersSignUpReqDTO("user", "password1234", "user@test.com", List.of(Role.USER)));
+		usersService.signUp(new UsersSignUpReqDTO("admin", "password1234", "admin@test.com", List.of(Role.ADMIN)));
+		MvcResult adminLogin = mockMvc.perform(post("/user/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("""
+								{
+									"userName": "admin",\s
+									"password": "password1234"\s
+								}
+								"""))
+				.andExpect(status().isOk())
+				.andReturn();
+		String json = adminLogin.getResponse().getContentAsString();
+		UserLoginResDTO loginResDTO = mapper.readValue(json, UserLoginResDTO.class);
+
+		mockMvc.perform(patch("/admin/user/{id}/deactivate", 1)
+						.header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResDTO.token()))
+						.andExpect(status().isAccepted());
+
+		mockMvc.perform(post("/user/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("""
+								{
+									"userName": "user",\s
+									"password": "password1234"\s
+								}
+								"""))
+				.andExpect(status().isForbidden());
+	}
+
+	@Test
+	@DisplayName("Admin Get 테스트")
+	void getTestAdmin() throws Exception {
+		// admin 준비
+		usersService.signUp(new UsersSignUpReqDTO("admin", "password1234", "admin@test.com", List.of(Role.ADMIN)));
+		MvcResult adminLogin = mockMvc.perform(post("/user/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("""
+								{
+									"userName": "admin",\s
+									"password": "password1234"\s
+								}
+								"""))
+				.andExpect(status().isOk())
+				.andReturn();
+		String adminJson = adminLogin.getResponse().getContentAsString();
+		UserLoginResDTO adminLoginResDTO = mapper.readValue(adminJson, UserLoginResDTO.class);
+
+		mockMvc.perform(get("/admin")
+					.header(HttpHeaders.AUTHORIZATION, "Bearer " + adminLoginResDTO.token())
+				).andExpect(status().isOk());
+
+		// user 준비
+		usersService.signUp(new UsersSignUpReqDTO("user", "password1234", "user@test.com", List.of(Role.USER)));
+		MvcResult userLogin = mockMvc.perform(post("/user/login")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content("""
+								{
+									"userName": "user",\s
+									"password": "password1234"\s
+								}
+								"""))
+				.andExpect(status().isOk())
+				.andReturn();
+		String userJson = userLogin.getResponse().getContentAsString();
+		UserLoginResDTO userLoginResDTO = mapper.readValue(userJson, UserLoginResDTO.class);
+		mockMvc.perform(get("/admin")
+					.header(HttpHeaders.AUTHORIZATION, "Bearer " + userLoginResDTO.token())
+				).andExpect(status().isForbidden());
 	}
 
 }

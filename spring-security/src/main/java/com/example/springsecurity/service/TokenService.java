@@ -85,7 +85,7 @@ public class TokenService {
 		// 타입변환
 		List<?> roles = (List<?>) claims.get("roles");
 		List<GrantedAuthority> roleList = roles.stream()
-				.map(role -> new SimpleGrantedAuthority((String) role))
+				.map(role -> new SimpleGrantedAuthority("ROLE_" + role))
 				.collect(Collectors.toList());
 
 		return new JwtToken (
