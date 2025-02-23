@@ -23,6 +23,7 @@ public class DataInitializer {
 		if (rolesRepository.count() == 0) {
 			List<Roles> roles = new ArrayList<>();
 			roles.add(new Roles(Role.USER));
+			roles.add(new Roles(Role.OAUTH2_USER));
 			roles.add(new Roles(Role.ADMIN));
 			rolesRepository.saveAll(roles);
 		}

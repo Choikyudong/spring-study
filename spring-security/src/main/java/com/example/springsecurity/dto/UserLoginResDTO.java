@@ -11,4 +11,5 @@ public record UserLoginResDTO(String userName, String email, String token) {
 				token
 		);
 	}
+
 }

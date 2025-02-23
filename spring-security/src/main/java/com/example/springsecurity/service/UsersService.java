@@ -1,5 +1,6 @@
 package com.example.springsecurity.service;
 
+import com.example.springsecurity.domain.Role;
 import com.example.springsecurity.dto.*;
 import com.example.springsecurity.entity.Roles;
 import com.example.springsecurity.entity.Users;
@@ -53,6 +54,12 @@ public class UsersService implements UserDetailsService {
 
 		if (!users.isEnabled()) {
 			throw new DisabledException("Disabled Users");
+		}
+
+		boolean isUser = users.getAuthorities().stream()
+				.anyMatch(auth -> !auth.getAuthority().equals(Role.OAUTH2_USER.name()));
+		if (isUser) {
+			throw new BadCredentialsException("Oauth User cant login");
 		}
 
 		return UserLoginResDTO.convert(users, tokenService.createToken(users));

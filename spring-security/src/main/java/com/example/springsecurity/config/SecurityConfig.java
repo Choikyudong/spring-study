@@ -2,6 +2,8 @@ package com.example.springsecurity.config;
 
 import com.example.springsecurity.domain.Role;
 import com.example.springsecurity.filter.JwtFilter;
+import com.example.springsecurity.handler.OAuth2FailureHandler;
+import com.example.springsecurity.handler.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,11 +23,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 	private final JwtFilter jwtFilter;
+	private final OAuth2SuccessHandler oAuth2SuccessHandler;
+	private final OAuth2FailureHandler oAuth2FailureHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		return http.authorizeHttpRequests(auth -> auth
-						.requestMatchers(HttpMethod.GET, "/user", "/user/*").permitAll()
+						.requestMatchers(HttpMethod.GET,
+								"/user", "/user/*",
+								"/oauth", "/oauth/*"
+						).permitAll()
 						.requestMatchers(HttpMethod.GET, "/admin","/admin/*").hasRole(Role.ADMIN.name())
 						.requestMatchers(HttpMethod.OPTIONS)
 						.permitAll()
@@ -43,6 +50,10 @@ public class SecurityConfig {
 				.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session
 					.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				)
+				.oauth2Login(oauth -> oauth
+						.successHandler(oAuth2SuccessHandler)
+						.failureHandler(oAuth2FailureHandler)
 				)
 				.addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 				.build();
