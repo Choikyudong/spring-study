@@ -23,4 +23,8 @@ public class OrdersItem {
 	@Column(nullable = false)
 	private int price;
 
+	public void setOrders(Orders orders) {
+		this.orders = orders;
+	}
+
 }

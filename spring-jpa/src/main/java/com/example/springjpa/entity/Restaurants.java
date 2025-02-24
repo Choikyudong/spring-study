@@ -21,6 +21,9 @@ public class Restaurants {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
+	@Column(nullable = false)
+	private String name;
+
 	@OneToMany(
 			mappedBy = "restaurants",
 			cascade = CascadeType.ALL,

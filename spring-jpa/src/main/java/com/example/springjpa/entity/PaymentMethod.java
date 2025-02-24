@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -16,7 +15,8 @@ public class PaymentMethod {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	private int customerId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Customer customer;
 
 	private String name;
 

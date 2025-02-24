@@ -2,41 +2,26 @@ package com.example.springjpa.service;
 
 import com.example.springjpa.dto.*;
 import com.example.springjpa.entity.Owner;
-import com.example.springjpa.entity.Restaurants;
-import com.example.springjpa.entity.vo.UserInfo;
 import com.example.springjpa.repository.OwnerRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OwnerService {
 
 	private final OwnerRepository ownerRepository;
 
 	@Transactional
-	public void register(OwnerRegisterReqDTO ownerRegisterReqDTO) {
-		RestaurantsRegisterReqDTO registerReqDTO = ownerRegisterReqDTO.registerReqDTO();
-		Restaurants restaurants;
-		if (Objects.nonNull(registerReqDTO.menus())) {
-			restaurants = Restaurants.builder()
-					.restaurantsMenus(registerReqDTO.menus())
-					.address(registerReqDTO.address())
-					.category(ownerRegisterReqDTO.registerReqDTO().category())
-					.build();
-		} else {
-			restaurants = Restaurants.builder()
-					.address(registerReqDTO.address())
-					.category(ownerRegisterReqDTO.registerReqDTO().category())
-					.build();
+	public void register(OwnerRegisterReqDTO reqDTO) {
+		if (ownerRepository.existsByUserInfoNick(reqDTO.userInfo().getNick())) {
+			throw new IllegalArgumentException("Already exists User");
 		}
 
 		Owner owner = Owner.builder()
-				.userInfo(ownerRegisterReqDTO.userInfo())
-				.restaurants(restaurants)
+				.userInfo(reqDTO.userInfo())
+				.address(reqDTO.address())
 				.build();
 		ownerRepository.save(owner);
 	}
@@ -51,22 +36,18 @@ public class OwnerService {
 	}
 
 	@Transactional
-	public void update(OwnerUpdateReqDTO ownerUpdateReqDTO) {
-		Owner owner = ownerRepository.findById(ownerUpdateReqDTO.id())
+	public void update(OwnerUpdateReqDTO updateReqDTO) {
+		Owner owner = ownerRepository.findOwnerById(updateReqDTO.id())
 				.orElseThrow(IllegalArgumentException::new);
-		UserInfo userInfo = UserInfo.builder()
-				.name(ownerUpdateReqDTO.name())
-				.name(ownerUpdateReqDTO.pwd())
-				.build();
-		owner.setUserInfo(userInfo);
+		owner.updateUserInfo(updateReqDTO.userInfo());
+		owner.updateAddress(updateReqDTO.address());
 	}
 
-	public boolean delete(int id) {
+	public void delete(int id) {
 		if (!ownerRepository.existsById(id)) {
-			return false;
+			throw new IllegalArgumentException("Not Exists User");
 		}
 		ownerRepository.deleteById(id);
-		return true;
 	}
 
 }

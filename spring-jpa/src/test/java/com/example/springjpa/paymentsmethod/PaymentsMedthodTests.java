@@ -13,7 +13,7 @@ import com.example.springjpa.entity.vo.UserInfo;
 import com.example.springjpa.service.CustomerService;
 import com.example.springjpa.service.PaymentMethodService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Tag("결제수단")
+@DisplayName("결제수단")
 @ExtendWith(TestExecutionListener.class)
 public class PaymentsMedthodTests {
 
@@ -35,7 +35,7 @@ public class PaymentsMedthodTests {
 	private PaymentMethodService paymentMethodService;
 
 	@BeforeEach
-	@Tag("사용자 생성")
+	@DisplayName("사용자 생성")
 	void setUp() {
 		System.out.println("\nsetUp - start");
 		CustomerRegisterReqDTO customerRegisterReqDTO = new CustomerRegisterReqDTO(
@@ -51,26 +51,30 @@ public class PaymentsMedthodTests {
 	}
 
 	@Test
-	@Tag("목록 조회")
+	@DisplayName("목록 조회")
 	void getList() {
 		int customerId = 1;
-		List<PaymentMethod> list = paymentMethodService.getList(customerId);
-		assertNotNull(list);
+		assertTrue(paymentMethodService.getList(customerId).isEmpty());
+
+		PaymentMethodRegisterReqDTO paymentsReqDTO = new PaymentMethodRegisterReqDTO(
+				1, "APPLE", new PaymentInfo(PaymentType.APPLEPAY, "d32iuoc0ads")
+		);
+		paymentMethodService.register(paymentsReqDTO);
+
+		assertFalse(paymentMethodService.getList(customerId).isEmpty());
 	}
 
 	@Test
-	@Tag("등록")
+	@DisplayName("등록")
 	void register() {
 		PaymentMethodRegisterReqDTO paymentsReqDTO = new PaymentMethodRegisterReqDTO(
 				1, "APPLE", new PaymentInfo(PaymentType.APPLEPAY, "d32iuoc0ads")
 		);
-
-		List<PaymentMethod> paymentResDTOList = paymentMethodService.register(paymentsReqDTO);
-		assertNotNull(paymentResDTOList);
+		assertFalse(paymentMethodService.register(paymentsReqDTO).isEmpty());
 	}
 
 	@Test
-	@Tag("수정")
+	@DisplayName("수정")
 	void update() {
 		// 등록
 		PaymentMethodRegisterReqDTO paymentsReqDTO = new PaymentMethodRegisterReqDTO(
@@ -100,7 +104,7 @@ public class PaymentsMedthodTests {
 	}
 
 	@Test
-	@Tag("삭제")
+	@DisplayName("삭제")
 	void delete() {
 		// 테스트용
 		PaymentMethodRegisterReqDTO paymentsReqDTO = new PaymentMethodRegisterReqDTO(

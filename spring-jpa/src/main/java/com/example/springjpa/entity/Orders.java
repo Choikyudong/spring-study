@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -37,16 +38,22 @@ public class Orders {
 	@Enumerated(EnumType.STRING)
 	private OrdersStatus ordersStatus;
 
-	public void setCustomer(Customer customer) {
+	public Orders() {
+		this.ordersStatus = OrdersStatus.PENDING;
+	}
+
+	public void assignCustomer(Customer customer) {
 		this.customer = customer;
 	}
 
-	public void setOrdersStatus(OrdersStatus ordersStatus) {
+	public void updateOrdersStatus(OrdersStatus ordersStatus) {
 		this.ordersStatus = ordersStatus;
 	}
 
-	public void setOrdersItems(List<OrdersItem> ordersItems) {
-		this.ordersItems = ordersItems;
+	public void addOrdersItems(OrdersItem ordersItem) {
+		Objects.requireNonNull(ordersItem, "Orders Item must be not null");
+		this.ordersItems.add(ordersItem);
+		ordersItem.setOrders(this);
 	}
 
 }

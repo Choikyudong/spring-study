@@ -6,5 +6,7 @@ import com.example.springjpa.entity.vo.Address;
 
 import java.util.List;
 
-public record RestaurantsRegisterReqDTO(List<RestaurantsMenu> menus, Address address, Category category) {
+public record RestaurantsRegisterReqDTO(
+		String name,
+		List<RestaurantsMenu> menus, Address address, Category category) {
 }

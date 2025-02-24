@@ -10,6 +10,10 @@ import java.util.Optional;
 @Repository
 public interface OwnerRepository extends JpaRepository<Owner, Integer> {
 
+	boolean existsByUserInfoNick(String nick);
+
+	Optional<Owner> findOwnerById(int id);
+
 	Optional<OwnerLoginResDTO> findByUserInfoNick(String nick);
 
 }

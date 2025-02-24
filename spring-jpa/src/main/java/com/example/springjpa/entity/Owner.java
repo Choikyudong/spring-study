@@ -1,33 +1,32 @@
 package com.example.springjpa.entity;
 
+import com.example.springjpa.entity.vo.Address;
 import com.example.springjpa.entity.vo.UserInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-@Table
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
 @Getter
-public class Owner {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
-
-	@Embedded
-	private UserInfo userInfo;
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Owner extends User {
 
 	@OneToOne(cascade = CascadeType.PERSIST)
 	private Restaurants restaurants;
 
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
+	@Builder
+	public Owner(UserInfo userInfo, Address address) {
+		super.userInfo = userInfo;
+		super.address = address;
 	}
 
-	public void setRestaurants(Restaurants restaurants) {
-		this.restaurants = restaurants;
+	@Override
+	public void updateUserInfo(UserInfo info) {
+		super.updateUserInfo(info);
+	}
+
+	@Override
+	public void updateAddress(Address address) {
+		super.updateAddress(address);
 	}
 
 }

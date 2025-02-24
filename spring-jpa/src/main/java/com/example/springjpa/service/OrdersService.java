@@ -9,36 +9,31 @@ import com.example.springjpa.entity.OrdersItem;
 import com.example.springjpa.entity.Payment;
 import com.example.springjpa.repository.OrdersRepository;
 import com.example.springjpa.repository.PaymentRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
-@Transactional
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OrdersService {
 
 	private final OrdersRepository ordersRepository;
 	private final PaymentRepository paymentRepository;
 	private final CustomerService customerService;
 
+	@Transactional
 	public OrdersResDTO order(OrdersReqDTO ordersReqDTO) {
-		Customer customer = customerService.findCustomer(ordersReqDTO.customerId());
+		Customer customer = customerService.findById(ordersReqDTO.customerId());
 		Orders orders = new Orders();
-		orders.setCustomer(customer);
-		orders.setOrdersStatus(OrdersStatus.PENDING);
+		customer.addOrder(orders);
 
-		List<OrdersItem> ordersItems = ordersReqDTO.list().stream()
-				.map(reqDTO -> OrdersItem.builder()
-						.orders(orders)
-						.name(reqDTO.name())
-						.price(reqDTO.price())
-						.build())
-				.toList();
-		orders.setOrdersItems(ordersItems);
+		for (OrdersItemDTO ordersItem : ordersReqDTO.list()) {
+			orders.addOrdersItems(OrdersItem.builder()
+					.name(ordersItem.name())
+					.price(ordersItem.price())
+					.build());
+		}
 		Orders result = ordersRepository.save(orders);
 
 		// 결제 요청...
@@ -58,6 +53,7 @@ public class OrdersService {
 		return OrdersResDTO.convertOrderToOrderResDTO(orders);
 	}
 
+	@Transactional(readOnly = true)
 	public OrdersListResDTO findOrders(OrdersListReqDTO reqDTO) {
 		Page<Orders> ordersPage = ordersRepository.findByCustomerIdOrderByOrdersTimeDesc(
 				reqDTO.customerId(), reqDTO.paging().toPageable()
@@ -65,11 +61,12 @@ public class OrdersService {
 		return OrdersListResDTO.convert(ordersPage);
 	}
 
+	@Transactional
 	public boolean cancle(int orderId) {
 		try {
 			Orders orders = ordersRepository.findById(orderId)
 					.orElseThrow(IllegalArgumentException::new);
-			orders.setOrdersStatus(OrdersStatus.CANCELED);
+			orders.updateOrdersStatus(OrdersStatus.CANCELED);
 			Payment payment = paymentRepository.findByOrdersId(orders.getId());
 			payment.setPaymentStatus(PaymentStatus.CANCELED);
 		} catch (IllegalArgumentException i) {

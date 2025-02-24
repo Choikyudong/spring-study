@@ -5,36 +5,42 @@ import com.example.springjpa.entity.vo.UserInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
-@Table
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Customer {
+public class Customer extends User {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	@OneToMany(
+			mappedBy = "customer",
+			fetch = FetchType.LAZY,
+			orphanRemoval = true
+	)
+	private List<Orders> orders = new ArrayList<>();
 
-	@Embedded
-	private UserInfo userInfo;
-
-	@Embedded
-	@Column(nullable = false)
-	private Address address;
-
-	@OneToMany(mappedBy = "customer")
-	private List<Orders> orders;
-
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
+	@Builder
+	public Customer(UserInfo userInfo, Address address) {
+		super.userInfo = userInfo;
+		super.address = address;
 	}
 
-	public void setAddress(Address address) {
-		this.address = address;
+	@Override
+	public void updateUserInfo(UserInfo info) {
+		super.updateUserInfo(info);
+	}
+
+	@Override
+	public void updateAddress(Address address) {
+		super.updateAddress(address);
+	}
+
+	public void addOrder(Orders orders) {
+		Objects.requireNonNull(orders, "Orders can`t be null");
+		this.orders.add(orders);
+		orders.assignCustomer(this);
 	}
 
 }

@@ -8,7 +8,7 @@ import com.example.springjpa.entity.vo.Address;
 import com.example.springjpa.entity.vo.UserInfo;
 import com.example.springjpa.service.OwnerService;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Tag("식당관리자")
+@DisplayName("식당관리자")
 @ExtendWith(TestExecutionListener.class)
 public class OwnerTests {
 
@@ -28,7 +28,7 @@ public class OwnerTests {
 	private OwnerService ownerService;
 
 	@BeforeEach
-	@Tag("테스트 준비")
+	@DisplayName("테스트 준비")
 	void setUp() {
 		System.out.println("\nsetUp - start");
 		List<RestaurantsMenu> menus = new ArrayList<>();
@@ -39,9 +39,11 @@ public class OwnerTests {
 		menus.add(new RestaurantsMenu("메뉴5", 5));
 		OwnerRegisterReqDTO setUp = new OwnerRegisterReqDTO(
 				new UserInfo("관리자", "관리자", "12345!"),
+				new Address("좋은 도시", "1번가"),
 				new RestaurantsRegisterReqDTO(
+						"좋은 식당",
 						menus,
-						new Address("멋진 도시", "멋진 거리"),
+						new Address("좋은 위치", "깨끗한 거리"),
 						Category.KR
 				)
 		);
@@ -54,7 +56,7 @@ public class OwnerTests {
 	}
 
 	@Test
-	@Tag("로그인")
+	@DisplayName("로그인")
 	void login() {
 		OwnerLoginReqDTO loginReqDTO = new OwnerLoginReqDTO(
 				"관리자",
@@ -70,14 +72,16 @@ public class OwnerTests {
 	}
 
 	@Test
-	@Tag("가입")
+	@DisplayName("가입")
 	void register() {
 		OwnerRegisterReqDTO reqDTO = new OwnerRegisterReqDTO(
 				new UserInfo("관리자1", "나는관리자", "123dskjlfhasd2!"),
+				new Address("좋은 도시", "1번가"),
 				new RestaurantsRegisterReqDTO(
-					null,
-					new Address("멋진 도시", "멋진 거리"),
-					Category.KR
+						"좋은 식당",
+						null,
+						new Address("좋은 위치", "깨끗한 거리"),
+						Category.KR
 				)
 		);
 		ownerService.register(reqDTO);
@@ -90,9 +94,11 @@ public class OwnerTests {
 		menus.add(new RestaurantsMenu("메뉴5", 213));
 		OwnerRegisterReqDTO reqDTO2 = new OwnerRegisterReqDTO(
 				new UserInfo("관리자2", "나는관리자", "123dskjlfhasd2!"),
+				new Address("좋은 도시", "1번가"),
 				new RestaurantsRegisterReqDTO(
+						"좋은 식당",
 						menus,
-						new Address("멋진 도시", "멋진 거리"),
+						new Address("좋은 위치", "깨끗한 거리"),
 						Category.KR
 				)
 		);
@@ -100,38 +106,43 @@ public class OwnerTests {
 	}
 
 	@Test
-	@Tag("수정")
+	@DisplayName("수정")
 	void update() {
 		OwnerUpdateReqDTO updateReqDTO1 = new OwnerUpdateReqDTO(
 				1,
-				"괸리자입니다.",
-				"123456"
+				new UserInfo("관리자", "괸리자입니다.", "123456"),
+				new Address("좋은 도시", "1번가")
 		);
 		ownerService.update(updateReqDTO1);
 
 		OwnerUpdateReqDTO updateReqDTO2 = new OwnerUpdateReqDTO(
 				1,
-				"괸리자입니다.",
-				null
+				new UserInfo(null, "괸리자입니다.", null),
+				new Address("좋은 도시", "1번가")
 		);
 		ownerService.update(updateReqDTO2);
 
 		OwnerUpdateReqDTO updateReqDTO3 = new OwnerUpdateReqDTO(
 				99,
-				"괸리자입니다.",
-				"1111"
+				new UserInfo("관리자", "괸리자입니다.", "123456"),
+				null
 		);
 		assertThrows(IllegalArgumentException.class, () -> ownerService.update(updateReqDTO3));
+
+		OwnerLoginReqDTO loginReqDTO = new OwnerLoginReqDTO(
+				"관리자",
+				"123456"
+		);
+		assertNotNull(ownerService.login(loginReqDTO));
 	}
 
 	@Test
-	@Tag("삭제")
+	@DisplayName("삭제")
 	void delete() {
-		int OwnerId = 1;
-		assertTrue(ownerService.delete(OwnerId));
-
-		int failOwnerId = 999;
-		assertFalse(ownerService.delete(failOwnerId));
+		ownerService.delete(1);
+		assertThrows(IllegalArgumentException.class, () -> {
+			ownerService.delete(999);
+		});
 	}
 
 }

@@ -3,9 +3,10 @@ package com.example.springjpa.service;
 import com.example.springjpa.dto.PaymentMethodDeleteReqDTO;
 import com.example.springjpa.dto.PaymentMethodRegisterReqDTO;
 import com.example.springjpa.dto.PaymentMethodUpdateReqDTO;
+import com.example.springjpa.entity.Customer;
 import com.example.springjpa.entity.PaymentMethod;
 import com.example.springjpa.repository.PaymentMethodRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,24 +14,26 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class PaymentMethodService {
 
 	private final PaymentMethodRepository paymentMethodRepository;
-
-	public List<PaymentMethod> getList(int customerId) {
-		return paymentMethodRepository.findByCustomerId(customerId);
-	}
+	private final CustomerService customerService;
 
 	@Transactional
 	public List<PaymentMethod> register(PaymentMethodRegisterReqDTO paymentMethodRegisterReqDTO) {
+		Customer customer = customerService.findById(paymentMethodRegisterReqDTO.customerId());
 		PaymentMethod paymentMethod = PaymentMethod.builder()
-				.customerId(paymentMethodRegisterReqDTO.customerId())
+				.customer(customer)
 				.name(paymentMethodRegisterReqDTO.name())
 				.paymentInfo(paymentMethodRegisterReqDTO.paymentInfo())
 				.build();
 		paymentMethodRepository.save(paymentMethod);
 		return getList(paymentMethodRegisterReqDTO.customerId());
+	}
+
+	public List<PaymentMethod> getList(int customerId) {
+		return paymentMethodRepository.findByCustomerId(customerId);
 	}
 
 	@Transactional

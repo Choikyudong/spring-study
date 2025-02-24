@@ -11,7 +11,6 @@ import org.springframework.data.annotation.CreatedDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

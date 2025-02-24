@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Tag("사용자")
+@DisplayName("사용자")
 @ExtendWith(TestExecutionListener.class)
 public class CustomerTests {
 
@@ -24,7 +24,7 @@ public class CustomerTests {
 	private CustomerService customerService;
 
 	@BeforeEach
-	@Tag("사용자 데이터 생성")
+	@DisplayName("사용자 데이터 생성")
 	void setUp() {
 		System.out.println("\nsetUp - start");
 		CustomerRegisterReqDTO customerRegisterReqDTO = new CustomerRegisterReqDTO(
@@ -40,7 +40,7 @@ public class CustomerTests {
 	}
 
 	@Test
-	@Tag("회원가입")
+	@DisplayName("회원가입")
 	void register() {
 		CustomerRegisterReqDTO customerRegisterReqDTO = new CustomerRegisterReqDTO(
 				new UserInfo("test", "고객", "test1234"),
@@ -58,7 +58,7 @@ public class CustomerTests {
 	}
 
 	@Test
-	@Tag("로그인")
+	@DisplayName("로그인")
 	void login() throws BadRequestException {
 		CustomerLoginReqDTO login1 = new CustomerLoginReqDTO("test1", "test1234");
 		assertNotNull(customerService.login(login1));
@@ -75,11 +75,11 @@ public class CustomerTests {
 	}
 
 	@Test
-	@Tag("회원수정")
-	void update() {
+	@DisplayName("회원수정")
+	void update() throws BadRequestException {
 		CustomerUpdateReqDTO update1 = new CustomerUpdateReqDTO(
 				1,
-				new UserInfo(null, "고객1", "test1234"),
+				new UserInfo(null, "고객1", "test3412"),
 				new Address("도시1", "도로1")
 		);
 		customerService.update(update1);
@@ -99,6 +99,14 @@ public class CustomerTests {
 		assertThrows(IllegalArgumentException.class, () ->
 			customerService.update(update3)
 		);
+
+		CustomerLoginReqDTO loginFail = new CustomerLoginReqDTO("test1", "test1234");
+		assertThrows(BadRequestException.class, () -> {
+			customerService.login(loginFail);
+		});
+
+		CustomerLoginReqDTO loginSuccess = new CustomerLoginReqDTO("test1", "test3412");
+		assertNotNull(customerService.login(loginSuccess));
 	}
 
 }

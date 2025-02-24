@@ -2,28 +2,45 @@ package com.example.springjpa.entity.vo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Objects;
 
 @Getter
 @Embeddable
-@AllArgsConstructor
-@NoArgsConstructor()
 public class UserInfo {
 
 	@Column(unique = true)
-	private String nick;
+	private final String nick;
 
-	private String name;
+	private final String name;
 
-	private String pwd;
+	private final String pwd;
 
-	@Builder
-	public UserInfo(String name, String pwd) {
+	protected UserInfo() {
+		this.nick = null;
+		this.name = null;
+		this.pwd = null;
+	}
+
+	@Builder(toBuilder = true)
+	public UserInfo(String nick, String name, String pwd) {
+		this.nick = nick;
 		this.name = name;
 		this.pwd = pwd;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		UserInfo userInfo = (UserInfo) o;
+		return Objects.equals(nick, userInfo.nick) && Objects.equals(name, userInfo.name) && Objects.equals(pwd, userInfo.pwd);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(nick, name, pwd);
 	}
 
 }

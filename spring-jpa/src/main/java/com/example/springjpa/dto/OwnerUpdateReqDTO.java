@@ -1,4 +1,7 @@
 package com.example.springjpa.dto;
 
-public record OwnerUpdateReqDTO(int id, String name, String pwd) {
+import com.example.springjpa.entity.vo.Address;
+import com.example.springjpa.entity.vo.UserInfo;
+
+public record OwnerUpdateReqDTO(int id, UserInfo userInfo, Address address) {
 }
