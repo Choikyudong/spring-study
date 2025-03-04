@@ -1,0 +1,13 @@
+spring:
+  r2dbc:
+    url: r2dbc:h2:mem:///testdb
+    username: sa
+    password: ""
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+logging:
+  level:
+    org.springframework.r2dbc.core: DEBUG
+    io.r2dbc: DEBUG

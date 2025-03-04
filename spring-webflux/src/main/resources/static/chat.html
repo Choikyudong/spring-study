@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>채팅방</title>
+</head>
+<body>
+<h1>채팅방</h1>
+<div id="messages"></div>
+<label for="message">
+  <input id="message" placeholder="메시지 입력" />
+</label>
+<button onclick="sendMessage()">보내기</button>
+<script>
+  const userId = localStorage.getItem("userId");
+  if (userId === null) {
+    alert("로그인 해주세요");
+    window.location.href = "/users.html"
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const roomId = urlParams.get("roomId");
+
+  // 메시지 받기
+  function connectStream() {
+    console.log("stream on");
+    const eventSource = new EventSource(`/chat/receive/${roomId}/stream`);
+    eventSource.onmessage = function(event) {
+      const messages = document.getElementById("messages");
+      messages.innerHTML += "<p>" + event.data + "</p>";
+    };
+    eventSource.onerror = () => {
+      console.error("Disconnected...");
+      eventSource.close();
+      for (let i = 0; i < 5; i++) {
+        console.log("reconnecting...");
+        setTimeout(connectStream, 1000);
+      }
+    }
+  }
+
+  // 메시지 보내기
+  function sendMessage() {
+    const content = document.getElementById("message").value;
+    fetch("/chat/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId: userId, roomId, content })
+    });
+  }
+
+  async function roomValidate() {
+    try {
+      const response = await  fetch(`/room/${roomId}/exists`, {
+        method: "GET",
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result) {
+        throw new Error(`존재하지 않는 채팅방 : ${response.status} - ${result.message || result.statusText}`);
+      }
+
+      console.log("채팅방 입장 완료");
+      connectStream();
+    } catch (error) {
+      console.error(error);
+      alert(`채팅방이 사라졌습니다, : ${error.message}`);
+      window.location.href = `/rooms.html`;
+    }
+  }
+  roomValidate();
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>채팅방 목록</title>
+</head>
+<body>
+<h1>채팅방 생성</h1>
+<label for="roomName">
+  <input id="roomName" placeholder="RoomName" />
+</label>
+<button onclick="makeRoom()">생성</button>
+<h1>채팅방 목록</h1>
+<ul id="roomList"></ul>
+<script>
+  fetch("/room", {
+    method: "GET"
+  })
+  .then(response => response.json())
+  .then(rooms => {
+    const list = document.getElementById("roomList");
+    rooms.forEach(room => {
+      const li = document.createElement("li");
+      li.innerHTML = `<a data-id="${room.id}" href="#">${room.name}</a>`;
+      list.appendChild(li);
+      li.addEventListener("click", getRoom);
+    });
+  });
+
+  async function getRoom(e) {
+    e.preventDefault();
+    try {
+      const link = e.target.closest("a"); // <a> 태그 찾기
+      const roomId = link.getAttribute("data-id"); // data-id 추출
+      const response = await  fetch(`/room/${roomId}`, {
+        method: "GET",
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result) {
+        throw new Error(`채팅방 입장 실패 : ${response.status} - ${result.message || result.statusText}`);
+      }
+      window.location.href = `/chat.html?roomId=${roomId}`;
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
+  }
+
+  async function makeRoom() {
+    try {
+      const roomName = document.getElementById("roomName").value;
+      const response = await  fetch("/room", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ roomName })
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result) {
+        throw new Error(`채팅방 생성 실패 : ${response.status} - ${result.message || result.statusText}`);
+      }
+
+      alert("채팅방 생성 성공");
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
+  }
+
+  const userName = localStorage.getItem("userName");
+  if (userName === null) {
+    alert("로그인 해주세요");
+    window.location.href = "/user.html"
+  }
+</script>
+</body>
+</html>

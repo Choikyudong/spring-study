@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>사용자</title>
+</head>
+<body>
+<h1>사용자화면</h1>
+<label for="userName">
+  <input id="userName" placeholder="Username" />
+</label>
+<button onclick="login()">로그인</button>
+<button onclick="signup()">가입</button>
+<script>
+  async function login() {
+    try {
+      const userName = document.getElementById("userName").value;
+      const response = await fetch("/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userName })
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(`로그인 실패: ${response.status} - ${result.message || response.statusText}`);
+      }
+
+      localStorage.setItem("userId", result.id);
+      localStorage.setItem("userName", result.name);
+      alert("로그인 성공");
+      window.location.href = "/rooms.html";
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
+  }
+
+  async function signup() {
+    try {
+      const userName = document.getElementById("userName").value;
+      const response = await fetch("/users/join", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userName })
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result) {
+        throw new Error(`회원 가입 실패 : ${response.status} - ${result.message || result.statusText}`);
+      }
+
+      alert("회원 가입 성공");
+      document.getElementById("userName").value = '';
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
+  }
+</script>
+</body>
+</html>
