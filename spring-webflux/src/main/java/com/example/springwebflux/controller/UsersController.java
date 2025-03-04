@@ -10,13 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
+@Deprecated
 @RestController
-@RequestMapping("/users")
+//@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UsersController {
 
 	private final UsersService usersService;
 
+	/*
 	@PostMapping("/login")
 	public Mono<Users> login(@RequestBody UserDTO userDTO) {
 		return usersService.login(userDTO);
@@ -26,5 +28,6 @@ public class UsersController {
 	public Mono<Boolean> join(@RequestBody UserDTO userDTO) {
 		return usersService.join(userDTO);
 	}
+	*/
 
 }

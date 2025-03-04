@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Deprecated
 @RestController
 @RequestMapping("/chat")
 @RequiredArgsConstructor
 public class ChatController {
 
+	/*
 	private final ChatService chatService;
 
 	@GetMapping(value = "/receive/{roomId}/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -27,5 +29,6 @@ public class ChatController {
 		return chatService.sendMessage(chatSendDTO)
 				.map(ChatMessageDTO::from);
 	}
+	*/
 
 }

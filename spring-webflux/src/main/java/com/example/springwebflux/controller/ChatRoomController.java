@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Deprecated
 @RestController
 @RequestMapping("/room")
 @RequiredArgsConstructor
 public class ChatRoomController {
 
+	/*
 	private final ChatRoomService chatRoomService;
 
 	@GetMapping
@@ -34,5 +36,6 @@ public class ChatRoomController {
 	public Mono<Boolean> makeRoom(@RequestBody ChatRoomMakeDTO makeDTO) {
 		return chatRoomService.makeRoom(makeDTO);
 	}
+	*/
 
 }
