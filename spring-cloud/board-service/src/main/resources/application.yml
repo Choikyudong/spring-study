@@ -1,0 +1,5 @@
+spring:
+  config:
+    import: configserver:http://localhost:8888
+  application:
+    name: board-service # Config Server 설정 파일과 매핑

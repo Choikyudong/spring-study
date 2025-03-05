@@ -1,0 +1,30 @@
+server:
+  port: 8002
+
+spring:
+  application:
+    name: board-service
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:board
+    hikari:
+      username: sa
+      password:
+  h2:
+    console:
+      enabled: true
+      path: /board
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+  instance:
+    prefer-ip-address: true
