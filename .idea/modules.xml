@@ -2,6 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/board-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/board-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/config-server.main.iml" filepath="$PROJECT_DIR$/.idea/modules/config-server.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mironaut-test.main.iml" filepath="$PROJECT_DIR$/.idea/modules/mironaut-test.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mironaut-test.test.iml" filepath="$PROJECT_DIR$/.idea/modules/mironaut-test.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/spring-jpa.main.iml" filepath="$PROJECT_DIR$/.idea/modules/spring-jpa.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/spring-study.iml" filepath="$PROJECT_DIR$/spring-study.iml" />
     </modules>
